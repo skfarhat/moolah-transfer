@@ -47,8 +47,7 @@ public class Main {
         service.addAccount(account3);
 
         final HttpServer server = startServer();
-        logger.info(String.format("Jersey app started with WADL available at "
-                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+        logger.info("Moolah Jersey app started. Press any button to stop.");
         System.in.read();
         server.stop();
     }

@@ -2,7 +2,7 @@ package moolah.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import moolah.providers.AccountJSONDeSerializer;
+import moolah.providers.AccountJSONDeserializer;
 import moolah.providers.AccountJSONSerializer;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -16,12 +16,12 @@ public class Transfer {
 
     /** the account {@code amount} is being transferred from */
     @JsonSerialize(using = AccountJSONSerializer.class)
-    @JsonDeserialize(using = AccountJSONDeSerializer.class)
+    @JsonDeserialize(using = AccountJSONDeserializer.class)
     private Account from;
 
     /** the account {@code amount} is being transferred to */
     @JsonSerialize(using = AccountJSONSerializer.class)
-    @JsonDeserialize(using = AccountJSONDeSerializer.class)
+    @JsonDeserialize(using = AccountJSONDeserializer.class)
     private Account to;
 
     /** transfer amount, must be positive */

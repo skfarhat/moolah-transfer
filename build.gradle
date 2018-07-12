@@ -44,10 +44,6 @@ dependencies {
 
 }
 
-task myJavadocs(type: Javadoc) {
-    source = sourceSets.main.allJava
-}
-
 test {
     ignoreFailures = true
     afterTest { desc, result ->
@@ -62,3 +58,5 @@ jacocoTestReport {
         html.setDestination(new File("$buildDir/reports/jacoco"))
     }
 }
+
+// TODO: add Javadoc generation

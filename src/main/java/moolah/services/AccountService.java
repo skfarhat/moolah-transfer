@@ -18,19 +18,25 @@ import java.util.*;
 import static moolah.services.AccountService.ACCOUNTS_ROOT;
 
 /**
+ * Account Service REST API
  *
+ * This class handles HTTP: GET, POST, DELETE requests on Account resources
  */
 @Path(ACCOUNTS_ROOT)
 public class AccountService {
 
+    /* API PATHS */
     public static final String ACCOUNTS_ROOT = "/accounts";
     public static final String ACCOUNTS_ALL = "/";
-    public static final String ACCOUNTS_SINGLE_ID = "/{id}";
+    public static final String ACCOUNTS_ACCOUNT_ID = "/{id}";
     public static final String ACCOUNTS_ACCOUNT_PARAM = "/{id}/p";
     public static final String ACCOUNTS_CREATE = "/";
     public static final String ACCOUNTS_UPDATE = "/{id}";
     public static final String ACCOUNTS_TRANSFER = "/{fromId}/transfer/{toId}";
 
+    /**
+     * stores all created accounts
+     */
     private static Map<UUID, Account> accounts = new HashMap<>();
 
     /**
@@ -83,7 +89,7 @@ public class AccountService {
      * @return the Account object stored in the {@code accounts} HashMap, null if the account is not stored in the map.
      */
     @GET
-    @Path(ACCOUNTS_SINGLE_ID)
+    @Path(ACCOUNTS_ACCOUNT_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Account getAccount(@PathParam("id") UUID id) {
         return getAccountPrv(id);
@@ -165,7 +171,7 @@ public class AccountService {
      * @return the Account that was deleted.
      */
     @DELETE
-    @Path(ACCOUNTS_SINGLE_ID)
+    @Path(ACCOUNTS_ACCOUNT_ID)
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteAccount(@PathParam("id") UUID id) {
         Account toDelete = accounts.get(id);

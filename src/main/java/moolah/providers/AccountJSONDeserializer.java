@@ -10,7 +10,7 @@ import moolah.services.AccountService;
 import java.io.IOException;
 import java.util.UUID;
 
-public class AccountJSONDeSerializer extends JsonDeserializer<Account> {
+public class AccountJSONDeserializer extends JsonDeserializer<Account> {
     @Override
     public Account deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         String id = p.getValueAsString();

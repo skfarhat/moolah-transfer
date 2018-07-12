@@ -17,12 +17,6 @@ import java.util.*;
 
 import static moolah.services.AccountService.ACCOUNTS_ROOT;
 
-// TODO: create several accounts in one request
-// TODO: associate Transfers with an account
-// TODO: get all transfers for account with Id xx
-// NOTE: TODO: presently this Resource is weak from the perspective of handling multiple concurrent requests.
-// the data structures are not thread safe. Jersey advises creating new services per request.
-
 /**
  *
  */

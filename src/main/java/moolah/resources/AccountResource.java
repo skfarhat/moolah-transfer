@@ -32,7 +32,6 @@ public class AccountResource {
     public static final String ACCOUNTS_ROOT = "/accounts";
     public static final String ACCOUNTS_ALL = "/";
     public static final String ACCOUNTS_SINGLE_ID = "/{id}";
-    public static final String ACCOUNTS_ACCOUNT_XML = "/{id}/xml";
     public static final String ACCOUNTS_ACCOUNT_PARAM = "/{id}/p";
     public static final String ACCOUNTS_CREATE = "/";
     public static final String ACCOUNTS_UPDATE = "/{id}";
@@ -95,20 +94,7 @@ public class AccountResource {
     public Account getAccount(@PathParam("id") UUID id) {
         return getAccountPrv(id);
     }
-
-    /**
-     * GET /accounts/{id}/xml
-     *
-     * @param id of the Account to be returnedid
-     * @return the Account object stored in the {@code accounts} HashMap, null if the account is not stored in the map.
-     */
-    @GET
-    @Path(ACCOUNTS_ACCOUNT_XML)
-    @Produces(MediaType.APPLICATION_XML)
-    public Account getAccountXML(@PathParam("id") UUID id) {
-        return getAccountPrv(id);
-    }
-
+    
     /**
      * GET /accounts/{id}
      *

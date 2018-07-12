@@ -51,19 +51,6 @@ public class AccountResourceTest extends JerseyTest {
     }
 
     /**
-     * GET /accounts/{id}/xml
-     *
-     * Check that /accounts/{id}/xml returns the Account object when there is such an object.
-     */
-    @Test
-    public void testGETSingleAccountFromXML() {
-        Account testAccount = testAccounts.get(0);
-        final String URI = String.format("%s/%s/xml", AccountResource.ACCOUNTS_ROOT, testAccount.getId().toString());
-        Account fetchedAccount = target(URI).request().get(Account.class);
-        Assert.assertEquals(testAccount, fetchedAccount);
-    }
-
-    /**
      * GET /accounts/{id}
      *
      * Check that /accounts/{id} returns the Account object when there is such an object.

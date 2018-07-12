@@ -6,6 +6,8 @@ import moolah.services.AccountService;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,9 +15,10 @@ import java.util.UUID;
 
 public class Main {
 
+    private static Logger logger = LoggerFactory.getLogger(Main.class);
+
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:8080/";
-    static AccountService service;
 
     public static HttpServer startServer() {
 
@@ -29,14 +32,13 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        // create AccountService and add accounts to it
-        service = new AccountService();
+        AccountService service = new AccountService();
 
+        // create 3 Accounts and fix their IDs
+        // we fix the Ids of the account as it makes it easier for manual testing
         Account account1 = AccountFactory.createAccount("Investment", "Zulu", 15000.0);
         Account account2 = AccountFactory.createAccount("Checking", "Marwan", 4000.0);
         Account account3 = AccountFactory.createAccount("Checking", "Sami", 2000.0);
-
-        // we fix the Ids of the account as it makes it easier for manual testing
         account1.setId(UUID.fromString("263afea3-3843-4880-b1d5-cce977be06c1"));
         account2.setId(UUID.fromString("960b5a20-8201-4f14-9012-6f388e6313e3"));
         account3.setId(UUID.fromString("2562e2ad-15a0-493f-a003-878e6cd43670"));
@@ -45,7 +47,7 @@ public class Main {
         service.addAccount(account3);
 
         final HttpServer server = startServer();
-        System.out.println(String.format("Jersey app started with WADL available at "
+        logger.info(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
         server.stop();

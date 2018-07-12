@@ -41,7 +41,7 @@ public class AccountServiceTest extends JerseyTest {
 
     // Initialise test clients in static block (do it only once)
     static {
-        /**
+        /*
          * AccountService object instantiated statically and initialised with testAccounts that will be used in
          * test methods in this class.
          */

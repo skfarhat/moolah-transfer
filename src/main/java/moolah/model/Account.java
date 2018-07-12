@@ -11,13 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
-// NOTE: why choose withdraw(), deposit() vs addAmount()?
-// first they are more readable.
-// Second, they are stricter in checking that their inputs are correct: they both expect a positive amount, meaning if
-// ever they receive a negative amount an exception will be thrown and the developer alerted. Whereas for addAmount(),
-// both positive and negative are valid and have totally different effects.
-
 /**
  * POJO Account object
  */

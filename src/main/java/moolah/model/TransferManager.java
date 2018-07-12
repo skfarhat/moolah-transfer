@@ -5,6 +5,9 @@ import moolah.exceptions.TransferException;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * creates a Transfer object given the required parameters
+ */
 public class TransferManager {
 
     /**

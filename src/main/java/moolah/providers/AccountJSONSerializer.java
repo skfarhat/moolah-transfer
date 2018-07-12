@@ -8,6 +8,11 @@ import moolah.model.Account;
 
 import java.io.IOException;
 
+/**
+ * Class defining how to serialize an Account object to a JSON value.
+ *
+ * The id of the account is used as JSON string val.
+ */
 public class AccountJSONSerializer extends JsonSerializer<Account> {
 
     @Override

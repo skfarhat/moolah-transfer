@@ -10,6 +10,9 @@ import moolah.services.AccountService;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * Class defining how to deserialise an Account object from a given JSON value (assumed a string id) here
+ */
 public class AccountJSONDeserializer extends JsonDeserializer<Account> {
     @Override
     public Account deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {

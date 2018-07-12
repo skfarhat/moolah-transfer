@@ -2,6 +2,9 @@ package moolah.model;
 
 import java.util.UUID;
 
+/**
+ * manage creation of Account objects
+ */
 public class AccountFactory {
 
     public static Account createAccount(Account toCopy) {

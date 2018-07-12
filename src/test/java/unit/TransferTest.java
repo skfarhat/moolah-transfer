@@ -74,4 +74,23 @@ public class TransferTest {
         TransferManager.doTransfer(from, to, TRANSFER_AMOUNT, null);
     }
 
+    @Test
+    public void testEqualsWhenAgainstNull() {
+        Transfer t = new Transfer();
+        Assert.assertFalse(t.equals(null));
+    }
+
+    @Test
+    public void testEqualsWhenAgainstSelf() {
+        Transfer t = new Transfer();
+        Assert.assertTrue(t.equals(t));
+    }
+
+    @Test
+    public void testEqualsWhenAgainstNonTransferObject() {
+        Transfer t = new Transfer();
+        Object o = new Object();
+        Assert.assertFalse(t.equals(o));
+    }
+
 }

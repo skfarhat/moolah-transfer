@@ -142,4 +142,10 @@ public class AccountTest {
         Assert.assertEquals(0, transfers.size());
     }
 
+    @Test
+    public void testHashCodeIsSameAsId() {
+        Account account = new Account();
+        account.setId(UUID.randomUUID());
+        Assert.assertEquals(account.hashCode(), account.getId().hashCode());
+    }
 }

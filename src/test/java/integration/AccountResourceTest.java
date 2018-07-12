@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import moolah.model.Account;
 import moolah.model.AccountFactory;
 import moolah.model.Transfer;
+import moolah.model.TransferManager;
 import moolah.resources.AccountResource;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -31,8 +32,9 @@ public class AccountResourceTest extends JerseyTest {
      * The Accounts will be added to the {@code accountResource} object statically.
      */
     private static ArrayList<Account> testAccounts = new ArrayList<Account>(){{
-        add(AccountFactory.createAccount("Checking", "John", 2000.0));
-        add(AccountFactory.createAccount("Saving", "Beatrix", 4000.0));
+        add(AccountFactory.createAccount("Checking", "John", 20000.0));
+        add(AccountFactory.createAccount("Saving", "Beatrix", 40000.0));
+        add(AccountFactory.createAccount("Investment", "Jimmy", 40000.0));
     }};
 
     private static AccountResource accountResource;
@@ -579,45 +581,18 @@ public class AccountResourceTest extends JerseyTest {
      */
     @Test
     public void testGetAllTransfersFromAccount() {
-        Account account1 = AccountFactory.createAccount("Checking Account", "Sami", 10000.0 );
-        Account account2 = AccountFactory.createAccount("Savings Account", "John", 100.0 );
-        Account account3 = AccountFactory.createAccount("Obamacare", "Dude", 1000.0 );
+        // Test PreRequisite
+        Assert.assertTrue(testAccounts.size() > 2);
 
-        // Create some transfers going from and to account1, account2
-        //
+        Account account1 = testAccounts.get(0);
+        Account account2 = testAccounts.get(1);
+        Account account3 = testAccounts.get(2);
 
-        // account1 --> account2: 100.0
-        Transfer t1 = new Transfer();
-        t1.setId(UUID.randomUUID());
-        t1.setDate(new Date());
-        t1.setFrom(account1);
-        t1.setTo(account2);
-        t1.setAmount(100.0);
-
-        // account2 --> account1: 10.0
-        Transfer t2 = new Transfer();
-        t2.setId(UUID.randomUUID());
-        t2.setDate(new Date());
-        t2.setFrom(account2);
-        t2.setTo(account1);
-        t2.setAmount(10.0);
-
-        // account1 --> account3: 250.0
-        Transfer t3 = new Transfer();
-        t3.setId(UUID.randomUUID());
-        t3.setDate(new Date());
-        t3.setFrom(account1);
-        t3.setTo(account3);
-        t3.setAmount(250.0);
-
-        // account2 --> account3: 20.0
-        Transfer t4 = new Transfer();
-        t4.setId(UUID.randomUUID());
-        t4.setDate(new Date());
-        t4.setFrom(account2);
-        t4.setTo(account3);
-        t4.setAmount(20.0);
-
+        // Create some transfers: 3 including account1, 1 not.
+        Transfer t1 = TransferManager.doTransfer(account1, account2, 100.0, "T1");    // account1 --> account2: 100.0
+        Transfer t2 = TransferManager.doTransfer(account2, account1, 10.0, "T2");     // account2 --> account1: 10.0
+        Transfer t3 = TransferManager.doTransfer(account1, account3, 250.0, "T3");    // account1 --> account3: 250.0
+        Transfer t4 = TransferManager.doTransfer(account2, account3, 20.0, "T4");     // account2 --> account3: 20.0
         List<Transfer> transfers = new ArrayList<Transfer>() {{
             add(t1);
             add(t2);
@@ -625,7 +600,7 @@ public class AccountResourceTest extends JerseyTest {
             add(t4);
         }};
 
-        final String URI = String.format("accounts/%s/transfers", account1.getId());
+        final String URI = String.format("/accounts/%s/p/transfers", account1.getId());
         Response response = target(URI).request().get();
         List<Transfer> transfersFromResponse = response.readEntity(new GenericType<List<Transfer>>(){});
 
@@ -636,10 +611,10 @@ public class AccountResourceTest extends JerseyTest {
         Assert.assertEquals(3, transfersFromResponse.size());
 
         // Check that Transfer4 is not in that list but the rest are
-        Assert.assertTrue(transfers.contains(t1));
-        Assert.assertTrue(transfers.contains(t2));
-        Assert.assertTrue(transfers.contains(t3));
-        Assert.assertFalse(transfers.contains(t4));
+        Assert.assertTrue(transfersFromResponse.contains(t1));
+        Assert.assertTrue(transfersFromResponse.contains(t2));
+        Assert.assertTrue(transfersFromResponse.contains(t3));
+        Assert.assertFalse(transfersFromResponse.contains(t4));
     }
 
     /**
@@ -669,7 +644,7 @@ public class AccountResourceTest extends JerseyTest {
         t2.setTo(account1);
         t2.setAmount(10.0);
 
-        final String URI = String.format("accounts/%s/transfers", account1.getId());
+        final String URI = String.format("/accounts/%s/p/transfers", account1.getId());
         Response response = target(URI).request().get();
         Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }

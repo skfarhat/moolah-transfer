@@ -8,7 +8,7 @@ import moolah.model.Account;
 import moolah.model.AccountFactory;
 import moolah.model.Transfer;
 import moolah.model.TransferManager;
-import moolah.resources.AccountResource;
+import moolah.services.AccountService;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
@@ -22,14 +22,14 @@ import javax.ws.rs.core.Response;
 import java.util.*;
 
 /**
- * Integration test class for AccountResource
+ * Integration test class for AccountService
  */
-public class AccountResourceTest extends JerseyTest {
+public class AccountServiceTest extends JerseyTest {
 
     /**
      * test accounts used in this class
      *
-     * The Accounts will be added to the {@code accountResource} object statically.
+     * The Accounts will be added to the {@code accountService} object statically.
      */
     private static ArrayList<Account> testAccounts = new ArrayList<Account>(){{
         add(AccountFactory.createAccount("Checking", "John", 20000.0));
@@ -37,17 +37,17 @@ public class AccountResourceTest extends JerseyTest {
         add(AccountFactory.createAccount("Investment", "Jimmy", 40000.0));
     }};
 
-    private static AccountResource accountResource;
+    private static AccountService accountService;
 
     // Initialise test clients in static block (do it only once)
     static {
         /**
-         * AccountResource object instantiated statically and initialised with testAccounts that will be used in
+         * AccountService object instantiated statically and initialised with testAccounts that will be used in
          * test methods in this class.
          */
-        accountResource = new AccountResource();
+        accountService = new AccountService();
         for (Account a : testAccounts)
-            accountResource.addAccount(a);
+            accountService.addAccount(a);
     }
 
     /**
@@ -58,7 +58,7 @@ public class AccountResourceTest extends JerseyTest {
     @Test
     public void testGETSingleAccount() {
         Account testAccount = testAccounts.get(0);
-        final String URI = AccountResource.ACCOUNTS_ROOT + "/" + testAccount.getId().toString();
+        final String URI = AccountService.ACCOUNTS_ROOT + "/" + testAccount.getId().toString();
         Account fetchedAccount = target(URI).request().get(Account.class);
         Assert.assertEquals(testAccount, fetchedAccount);
     }
@@ -71,7 +71,7 @@ public class AccountResourceTest extends JerseyTest {
     @Test
     public void testGETSingleAccountWhenAbsent() {
         final String NON_EXISTENT_ID = UUID.randomUUID().toString();
-        final String URI = AccountResource.ACCOUNTS_ROOT + "/" + NON_EXISTENT_ID;
+        final String URI = AccountService.ACCOUNTS_ROOT + "/" + NON_EXISTENT_ID;
         Response response = target(URI).request().get();
         Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
@@ -85,7 +85,7 @@ public class AccountResourceTest extends JerseyTest {
     public void testGETAccounts() {
 
         // Make GET request and get response
-        final String URI = AccountResource.ACCOUNTS_ROOT;
+        final String URI = AccountService.ACCOUNTS_ROOT;
         Response response = target(URI).request().get();
 
         // Check that response status code is 200 OK
@@ -106,14 +106,14 @@ public class AccountResourceTest extends JerseyTest {
             Assert.assertFalse(verifier.containsKey(a.getId()));
 
             // Check that the returned account matches the its testAccount.
-            Account testAccount = accountResource.getAccount(a.getId());
+            Account testAccount = accountService.getAccount(a.getId());
             Assert.assertEquals(testAccount, a);
         }
     }
 
     @Override
     protected Application configure() {
-        return new ResourceConfig(AccountResource.class).packages("moolah");
+        return new ResourceConfig(AccountService.class).packages("moolah");
     }
 
     /**
@@ -133,7 +133,7 @@ public class AccountResourceTest extends JerseyTest {
         Entity entityToPost = Entity.entity(accountToCreate, MediaType.APPLICATION_JSON);
 
         // Make request and get response
-        final String URI = AccountResource.ACCOUNTS_ROOT;
+        final String URI = AccountService.ACCOUNTS_ROOT;
         Response response = target(URI).request().post(entityToPost);
         Account accountFromResponse = response.readEntity(Account.class);
 
@@ -178,7 +178,7 @@ public class AccountResourceTest extends JerseyTest {
         accountToCreate = mapper.treeToValue(root, Account.class);
 
         // Make  request and get response
-        final String URI = AccountResource.ACCOUNTS_ROOT;
+        final String URI = AccountService.ACCOUNTS_ROOT;
         Entity toPost = Entity.entity(accountToCreate, MediaType.APPLICATION_JSON);
         Response response = target(URI).request().post(toPost);
 
@@ -209,7 +209,7 @@ public class AccountResourceTest extends JerseyTest {
         updateAccount.setOwner(UPDATED_OWNER);
 
         // Make request and get a response
-        final String URI = String.format("%s/%s", AccountResource.ACCOUNTS_ROOT, original.getId());
+        final String URI = String.format("%s/%s", AccountService.ACCOUNTS_ROOT, original.getId());
         Entity toPost = Entity.entity(updateAccount, MediaType.APPLICATION_JSON);
         Response response = target(URI).request().post(toPost);
         Account accountFromResponse = response.readEntity(Account.class);
@@ -243,7 +243,7 @@ public class AccountResourceTest extends JerseyTest {
         updateAccount.setId(UUID.randomUUID());
 
         // Make request and get a response
-        final String URI = String.format("%s/%s", AccountResource.ACCOUNTS_ROOT, original.getId());
+        final String URI = String.format("%s/%s", AccountService.ACCOUNTS_ROOT, original.getId());
         Entity toPost = Entity.entity(updateAccount, MediaType.APPLICATION_JSON);
         Response response = target(URI).request().post(toPost);
 
@@ -264,7 +264,7 @@ public class AccountResourceTest extends JerseyTest {
         Account newAccount = AccountFactory.createAccount("ISA", "Ron", 1000.0);
 
         // Prepare the POST /accounts/{id} request, with the new ID
-        final String URI = String.format("%s/%s", AccountResource.ACCOUNTS_ROOT, newAccount.getId());
+        final String URI = String.format("%s/%s", AccountService.ACCOUNTS_ROOT, newAccount.getId());
         Entity toPost = Entity.entity(newAccount, MediaType.APPLICATION_JSON);
         Response response = target(URI).request().post(toPost);
 
@@ -294,7 +294,7 @@ public class AccountResourceTest extends JerseyTest {
         updateAccount.setOwner(original.getOwner());
 
         // Prepare a request with the POJO as entity, then get response
-        final String URI = String.format("%s/%s", AccountResource.ACCOUNTS_ROOT, original.getId());
+        final String URI = String.format("%s/%s", AccountService.ACCOUNTS_ROOT, original.getId());
         Entity toPost = Entity.entity(updateAccount, MediaType.APPLICATION_JSON);
         Response response = target(URI).request().post(toPost);
 
@@ -319,7 +319,7 @@ public class AccountResourceTest extends JerseyTest {
 
         Account toDelete = testAccounts.get(0);
 
-        final String URI = String.format("%s/%s", AccountResource.ACCOUNTS_ROOT, toDelete.getId());
+        final String URI = String.format("%s/%s", AccountService.ACCOUNTS_ROOT, toDelete.getId());
 
         // Do DELETE, we should get OK and the account that's deleted as the entity
         Response response1 = target(URI).request().delete();
@@ -349,7 +349,7 @@ public class AccountResourceTest extends JerseyTest {
 
         UUID idToDelete = UUID.randomUUID();
 
-        final String URI = String.format("%s/%s", AccountResource.ACCOUNTS_ROOT, idToDelete);
+        final String URI = String.format("%s/%s", AccountService.ACCOUNTS_ROOT, idToDelete);
 
         // Do DELETE, we should get OK
         Response response1 = target(URI).request().delete();

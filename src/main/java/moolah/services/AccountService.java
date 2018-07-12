@@ -1,4 +1,4 @@
-package moolah.resources;
+package moolah.services;
 
 import moolah.exceptions.AccountBalanceException;
 import moolah.exceptions.TransferException;
@@ -15,19 +15,19 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.*;
 
-import static moolah.resources.AccountResource.ACCOUNTS_ROOT;
+import static moolah.services.AccountService.ACCOUNTS_ROOT;
 
 // TODO: create several accounts in one request
 // TODO: associate Transfers with an account
 // TODO: get all transfers for account with Id xx
 // NOTE: TODO: presently this Resource is weak from the perspective of handling multiple concurrent requests.
-// the data structures are not thread safe. Jersey advises creating new resources per request.
+// the data structures are not thread safe. Jersey advises creating new services per request.
 
 /**
  *
  */
 @Path(ACCOUNTS_ROOT)
-public class AccountResource {
+public class AccountService {
 
     public static final String ACCOUNTS_ROOT = "/accounts";
     public static final String ACCOUNTS_ALL = "/";
@@ -94,7 +94,7 @@ public class AccountResource {
     public Account getAccount(@PathParam("id") UUID id) {
         return getAccountPrv(id);
     }
-    
+
     /**
      * GET /accounts/{id}
      *
@@ -126,7 +126,7 @@ public class AccountResource {
         try {
             Account toAdd = AccountFactory.createAccount(account);
             addAccount(toAdd);
-            return Response.created(URI.create(AccountResource.ACCOUNTS_ROOT + "/" + toAdd.getId())).entity(toAdd).build();
+            return Response.created(URI.create(AccountService.ACCOUNTS_ROOT + "/" + toAdd.getId())).entity(toAdd).build();
         }
         catch(AccountBalanceException exc) {
             throw new BadRequestException(exc.getMessage());
@@ -154,7 +154,8 @@ public class AccountResource {
         if (toUpdate == null) {
             throw new NotFoundException(String.format("Could not find account with id '%s' to update", id));
         }
-        toUpdate = AccountFactory.updateAccount(toUpdate, update);
+        toUpdate.setOwner(update.getOwner());
+        toUpdate.setName(update.getName());
         return Response.ok().entity(toUpdate).build();
     }
 

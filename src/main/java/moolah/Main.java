@@ -2,7 +2,7 @@ package moolah;
 
 import moolah.model.Account;
 import moolah.model.AccountFactory;
-import moolah.resources.AccountResource;
+import moolah.services.AccountService;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -15,11 +15,11 @@ public class Main {
 
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:8080/";
-    static AccountResource service;
+    static AccountService service;
 
     public static HttpServer startServer() {
 
-        // create a resource config that scans for JAX-RS resources and providers
+        // create a resource config that scans for JAX-RS services and providers
         // in com.example.rest package
         final ResourceConfig rc = new ResourceConfig().packages("moolah");
 
@@ -29,8 +29,8 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        // create AccountResource and add accounts to it
-        service = new AccountResource();
+        // create AccountService and add accounts to it
+        service = new AccountService();
 
         Account account1 = AccountFactory.createAccount("Investment", "Zulu", 15000.0);
         Account account2 = AccountFactory.createAccount("Checking", "Marwan", 4000.0);

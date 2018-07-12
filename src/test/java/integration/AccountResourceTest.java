@@ -593,12 +593,6 @@ public class AccountResourceTest extends JerseyTest {
         Transfer t2 = TransferManager.doTransfer(account2, account1, 10.0, "T2");     // account2 --> account1: 10.0
         Transfer t3 = TransferManager.doTransfer(account1, account3, 250.0, "T3");    // account1 --> account3: 250.0
         Transfer t4 = TransferManager.doTransfer(account2, account3, 20.0, "T4");     // account2 --> account3: 20.0
-        List<Transfer> transfers = new ArrayList<Transfer>() {{
-            add(t1);
-            add(t2);
-            add(t3);
-            add(t4);
-        }};
 
         final String URI = String.format("/accounts/%s/p/transfers", account1.getId());
         Response response = target(URI).request().get();

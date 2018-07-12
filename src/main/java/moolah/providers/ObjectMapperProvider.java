@@ -2,7 +2,6 @@ package moolah.providers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import moolah.model.Transfer;
 
 import javax.ws.rs.ext.ContextResolver;
 
